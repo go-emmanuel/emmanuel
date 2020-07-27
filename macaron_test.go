@@ -171,6 +171,7 @@ func Test_Macaron_Written(t *testing.T) {
 
 		ctx.run()
 		So(ctx.Written(), ShouldBeTrue)
+		m.releaseContext(ctx)
 	})
 }
 

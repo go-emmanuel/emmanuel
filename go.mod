@@ -1,4 +1,4 @@
-module gopkg.in/macaron.v1
+module github.com/go-emmanuel/emmanuel
 
 go 1.12
 

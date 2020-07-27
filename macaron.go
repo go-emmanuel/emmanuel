@@ -109,6 +109,7 @@ type Macaron struct {
 	befores  []BeforeHandler
 	handlers []Handler
 	action   Handler
+	pool     sync.Pool
 
 	hasURLPrefix bool
 	urlPrefix    string // For suburl support.
@@ -126,6 +127,11 @@ func NewWithLogger(out io.Writer) *Macaron {
 		action:   func() {},
 		Router:   NewRouter(),
 		logger:   log.New(out, "[Macaron] ", 0),
+		pool: sync.Pool{
+			New: func() interface{} {
+				return new(Context)
+			},
+		},
 	}
 	m.Router.m = m
 	m.Map(m.logger)
@@ -187,22 +193,36 @@ func (m *Macaron) Use(handler Handler) {
 }
 
 func (m *Macaron) createContext(rw http.ResponseWriter, req *http.Request) *Context {
-	c := &Context{
-		Injector: inject.New(),
-		handlers: m.handlers,
-		action:   m.action,
-		index:    0,
-		Router:   m.Router,
-		Req:      Request{req},
-		Resp:     NewResponseWriter(req.Method, rw),
-		Render:   &DummyRender{rw},
-		Data:     make(map[string]interface{}),
+	c := m.pool.Get().(*Context)
+	if c.Injector == nil {
+		c.Injector = inject.New()
+	} else {
+		//c.Injector.Clear()
 	}
+	c.handlers = m.handlers
+	c.action = m.action
+	c.index = 0
+	c.Router = m.Router
+	c.Req = Request{req}
+	c.Resp = NewResponseWriter(req.Method, rw)
+	c.Render = &DummyRender{rw}
+	if c.Data == nil {
+		c.Data = make(map[string]interface{})
+	} else {
+		for k := range c.Data {
+			delete(c.Data, k)
+		}
+	}
+
 	c.SetParent(m)
 	c.Map(c)
 	c.MapTo(c.Resp, (*http.ResponseWriter)(nil))
 	c.Map(req)
 	return c
+}
+
+func (m *Macaron) releaseContext(c *Context) {
+	m.pool.Put(c)
 }
 
 // ServeHTTP is the HTTP Entry point for a Macaron instance.

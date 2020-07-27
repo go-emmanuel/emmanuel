@@ -185,6 +185,7 @@ func (r *Router) Handle(method string, pattern string, handlers []Handler) *Rout
 		c.handlers = append(c.handlers, r.m.handlers...)
 		c.handlers = append(c.handlers, handlers...)
 		c.run()
+		r.m.releaseContext(c)
 	})
 }
 
@@ -265,6 +266,7 @@ func (r *Router) NotFound(handlers ...Handler) {
 		c.handlers = append(c.handlers, r.m.handlers...)
 		c.handlers = append(c.handlers, handlers...)
 		c.run()
+		r.m.releaseContext(c)
 	}
 }
 
