@@ -23,7 +23,7 @@ import (
 	"net/http"
 	"runtime"
 
-	"github.com/go-macaron/inject"
+	"github.com/go-emmanuel/inject"
 )
 
 const (

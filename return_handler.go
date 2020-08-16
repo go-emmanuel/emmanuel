@@ -19,7 +19,7 @@ import (
 	"net/http"
 	"reflect"
 
-	"github.com/go-macaron/inject"
+	"github.com/go-emmanuel/inject"
 )
 
 // ReturnHandler is a service that Martini provides that is called

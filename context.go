@@ -31,7 +31,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-macaron/inject"
+	"github.com/go-emmanuel/inject"
 	"github.com/unknwon/com"
 	"golang.org/x/crypto/pbkdf2"
 )

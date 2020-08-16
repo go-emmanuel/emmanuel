@@ -29,7 +29,7 @@ import (
 	"github.com/unknwon/com"
 	"gopkg.in/ini.v1"
 
-	"github.com/go-macaron/inject"
+	"github.com/go-emmanuel/inject"
 )
 
 const _VERSION = "1.3.4.0805"
