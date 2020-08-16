@@ -197,7 +197,7 @@ func (m *Macaron) createContext(rw http.ResponseWriter, req *http.Request) *Cont
 	if c.Injector == nil {
 		c.Injector = inject.New()
 	} else {
-		//c.Injector.Clear()
+		c.Injector.Clear()
 	}
 	c.handlers = m.handlers
 	c.action = m.action
