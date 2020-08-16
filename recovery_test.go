@@ -1,5 +1,6 @@
 // Copyright 2013 Martini Authors
 // Copyright 2014 The Macaron Authors
+// Copyright 2020 the Emmanuel developers
 //
 // Licensed under the Apache License, Version 2.0 (the "License"): you may
 // not use this file except in compliance with the License. You may obtain
@@ -13,7 +14,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-package macaron
+package emmanuel
 
 import (
 	"bytes"
@@ -31,7 +32,7 @@ func Test_Recovery(t *testing.T) {
 		setENV(DEV)
 
 		m := New()
-		m.Map(log.New(buf, "[Macaron] ", 0))
+		m.Map(log.New(buf, "[Emmanuel] ", 0))
 		m.Use(func(res http.ResponseWriter, req *http.Request) {
 			res.Header().Set("Content-Type", "unpredictable")
 		})

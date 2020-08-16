@@ -1,4 +1,5 @@
 // Copyright 2014 The Macaron Authors
+// Copyright 2020 the Emmanuel developers
 //
 // Licensed under the Apache License, Version 2.0 (the "License"): you may
 // not use this file except in compliance with the License. You may obtain
@@ -12,7 +13,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-package macaron
+package emmanuel
 
 import (
 	"errors"

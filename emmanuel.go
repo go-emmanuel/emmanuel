@@ -1,6 +1,7 @@
 // +build go1.3
 
 // Copyright 2014 The Macaron Authors
+// Copyright 2020 the Emmanuel developers
 //
 // Licensed under the Apache License, Version 2.0 (the "License"): you may
 // not use this file except in compliance with the License. You may obtain
@@ -14,8 +15,8 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-// Package macaron is a high productive and modular web framework in Go.
-package macaron // import "gopkg.in/macaron.v1"
+// emmanuel is a high performance fork of Macaron, a modular web framework in Go
+package emmanuel
 
 import (
 	"io"
@@ -39,7 +40,7 @@ func Version() string {
 }
 
 // Handler can be any callable function.
-// Macaron attempts to inject services into the handler's argument list,
+// Emmanuel attempts to inject services into the handler's argument list,
 // and panics if an argument could not be fullfilled via dependency injection.
 type Handler interface{}
 
@@ -64,7 +65,7 @@ func (invoke internalServerErrorInvoker) Invoke(params []interface{}) ([]reflect
 // it wraps the handler automatically to have some performance gain.
 func validateAndWrapHandler(h Handler) Handler {
 	if reflect.TypeOf(h).Kind() != reflect.Func {
-		panic("Macaron handler must be a callable function")
+		panic("Emmanuel handler must be a callable function")
 	}
 
 	if !inject.IsFastInvoker(h) {
@@ -102,9 +103,9 @@ func validateAndWrapHandlers(handlers []Handler, wrappers ...func(Handler) Handl
 	return wrappedHandlers
 }
 
-// Macaron represents the top level web application.
+// Emmanuel represents the top level web application.
 // inject.Injector methods can be invoked to map services on a global level.
-type Macaron struct {
+type Emmanuel struct {
 	inject.Injector
 	befores  []BeforeHandler
 	handlers []Handler
@@ -118,15 +119,15 @@ type Macaron struct {
 	logger *log.Logger
 }
 
-// NewWithLogger creates a bare bones Macaron instance.
+// NewWithLogger creates a bare bones Emmanuel instance.
 // Use this method if you want to have full control over the middleware that is used.
 // You can specify logger output writer with this function.
-func NewWithLogger(out io.Writer) *Macaron {
-	m := &Macaron{
+func NewWithLogger(out io.Writer) *Emmanuel {
+	m := &Emmanuel{
 		Injector: inject.New(),
 		action:   func() {},
 		Router:   NewRouter(),
-		logger:   log.New(out, "[Macaron] ", 0),
+		logger:   log.New(out, "[Emmanuel] ", 0),
 		pool: sync.Pool{
 			New: func() interface{} {
 				return new(Context)
@@ -143,15 +144,15 @@ func NewWithLogger(out io.Writer) *Macaron {
 	return m
 }
 
-// New creates a bare bones Macaron instance.
+// New creates a bare bones Emmanuel instance.
 // Use this method if you want to have full control over the middleware that is used.
-func New() *Macaron {
+func New() *Emmanuel {
 	return NewWithLogger(os.Stdout)
 }
 
-// Classic creates a classic Macaron with some basic default middleware:
-// macaron.Logger, macaron.Recovery and macaron.Static.
-func Classic() *Macaron {
+// Classic creates a classic Emmanuel with some basic default middleware:
+// emmanuel.Logger, emmanuel.Recovery and emmanuel.Static.
+func Classic() *Emmanuel {
 	m := New()
 	m.Use(Logger())
 	m.Use(Recovery())
@@ -162,7 +163,7 @@ func Classic() *Macaron {
 // Handlers sets the entire middleware stack with the given Handlers.
 // This will clear any current middleware handlers,
 // and panics if any of the handlers is not a callable function
-func (m *Macaron) Handlers(handlers ...Handler) {
+func (m *Emmanuel) Handlers(handlers ...Handler) {
 	m.handlers = make([]Handler, 0)
 	for _, handler := range handlers {
 		m.Use(handler)
@@ -170,29 +171,29 @@ func (m *Macaron) Handlers(handlers ...Handler) {
 }
 
 // Action sets the handler that will be called after all the middleware has been invoked.
-// This is set to macaron.Router in a macaron.Classic().
-func (m *Macaron) Action(handler Handler) {
+// This is set to emmanuel.Router in a emmanuel.Classic().
+func (m *Emmanuel) Action(handler Handler) {
 	handler = validateAndWrapHandler(handler)
 	m.action = handler
 }
 
 // BeforeHandler represents a handler executes at beginning of every request.
-// Macaron stops future process when it returns true.
+// Emmanuel stops future process when it returns true.
 type BeforeHandler func(rw http.ResponseWriter, req *http.Request) bool
 
-func (m *Macaron) Before(handler BeforeHandler) {
+func (m *Emmanuel) Before(handler BeforeHandler) {
 	m.befores = append(m.befores, handler)
 }
 
 // Use adds a middleware Handler to the stack,
 // and panics if the handler is not a callable func.
 // Middleware Handlers are invoked in the order that they are added.
-func (m *Macaron) Use(handler Handler) {
+func (m *Emmanuel) Use(handler Handler) {
 	handler = validateAndWrapHandler(handler)
 	m.handlers = append(m.handlers, handler)
 }
 
-func (m *Macaron) createContext(rw http.ResponseWriter, req *http.Request) *Context {
+func (m *Emmanuel) createContext(rw http.ResponseWriter, req *http.Request) *Context {
 	c := m.pool.Get().(*Context)
 	if c.Injector == nil {
 		c.Injector = inject.New()
@@ -221,14 +222,14 @@ func (m *Macaron) createContext(rw http.ResponseWriter, req *http.Request) *Cont
 	return c
 }
 
-func (m *Macaron) releaseContext(c *Context) {
+func (m *Emmanuel) releaseContext(c *Context) {
 	m.pool.Put(c)
 }
 
-// ServeHTTP is the HTTP Entry point for a Macaron instance.
+// ServeHTTP is the HTTP Entry point for a Emmanuel instance.
 // Useful if you want to control your own HTTP server.
 // Be aware that none of middleware will run without registering any router.
-func (m *Macaron) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
+func (m *Emmanuel) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	if m.hasURLPrefix {
 		req.URL.Path = strings.TrimPrefix(req.URL.Path, m.urlPrefix)
 	}
@@ -253,7 +254,7 @@ func GetDefaultListenInfo() (string, int) {
 }
 
 // Run the http server. Listening on os.GetEnv("PORT") or 4000 by default.
-func (m *Macaron) Run(args ...interface{}) {
+func (m *Emmanuel) Run(args ...interface{}) {
 	host, port := GetDefaultListenInfo()
 	if len(args) == 1 {
 		switch arg := args[0].(type) {
@@ -278,7 +279,7 @@ func (m *Macaron) Run(args ...interface{}) {
 }
 
 // SetURLPrefix sets URL prefix of router layer, so that it support suburl.
-func (m *Macaron) SetURLPrefix(prefix string) {
+func (m *Emmanuel) SetURLPrefix(prefix string) {
 	m.urlPrefix = prefix
 	m.hasURLPrefix = len(m.urlPrefix) > 0
 }
@@ -297,8 +298,8 @@ const (
 )
 
 var (
-	// Env is the environment that Macaron is executing in.
-	// The MACARON_ENV is read on initialization to set this variable.
+	// Env is the environment that Emmanuel is executing in.
+	// The EMMANUEL_DEV is read on initialization to set this variable.
 	Env     = DEV
 	envLock sync.Mutex
 
@@ -329,7 +330,7 @@ func safeEnv() string {
 }
 
 func init() {
-	setENV(os.Getenv("MACARON_ENV"))
+	setENV(os.Getenv("EMMANUEL_ENV"))
 
 	var err error
 	Root, err = os.Getwd()

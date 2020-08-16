@@ -1,5 +1,6 @@
 // Copyright 2013 Martini Authors
 // Copyright 2014 The Macaron Authors
+// Copyright 2020 the Emmanuel developers
 //
 // Licensed under the Apache License, Version 2.0 (the "License"): you may
 // not use this file except in compliance with the License. You may obtain
@@ -13,7 +14,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-package macaron
+package emmanuel
 
 import (
 	"bytes"
@@ -38,7 +39,7 @@ func Test_Static(t *testing.T) {
 
 		resp := httptest.NewRecorder()
 		resp.Body = new(bytes.Buffer)
-		req, err := http.NewRequest("GET", "http://localhost:4000/macaron.go", nil)
+		req, err := http.NewRequest("GET", "http://localhost:4000/emmanuel.go", nil)
 		So(err, ShouldBeNil)
 		m.ServeHTTP(resp, req)
 		So(resp.Code, ShouldEqual, http.StatusOK)
@@ -92,7 +93,7 @@ func Test_Static(t *testing.T) {
 
 		resp := httptest.NewRecorder()
 		resp.Body = new(bytes.Buffer)
-		req, err := http.NewRequest("HEAD", "http://localhost:4000/macaron.go", nil)
+		req, err := http.NewRequest("HEAD", "http://localhost:4000/emmanuel.go", nil)
 		So(err, ShouldBeNil)
 		m.ServeHTTP(resp, req)
 		So(resp.Code, ShouldEqual, http.StatusOK)
@@ -104,7 +105,7 @@ func Test_Static(t *testing.T) {
 		m.Use(Static(currentRoot))
 
 		resp := httptest.NewRecorder()
-		req, err := http.NewRequest("POST", "http://localhost:4000/macaron.go", nil)
+		req, err := http.NewRequest("POST", "http://localhost:4000/emmanuel.go", nil)
 		So(err, ShouldBeNil)
 		m.ServeHTTP(resp, req)
 		So(resp.Code, ShouldEqual, http.StatusNotFound)
@@ -113,7 +114,7 @@ func Test_Static(t *testing.T) {
 	Convey("Serve static files with bad directory", t, func() {
 		m := Classic()
 		resp := httptest.NewRecorder()
-		req, err := http.NewRequest("GET", "http://localhost:4000/macaron.go", nil)
+		req, err := http.NewRequest("GET", "http://localhost:4000/emmanuel.go", nil)
 		So(err, ShouldBeNil)
 		m.ServeHTTP(resp, req)
 		So(resp.Code, ShouldNotEqual, http.StatusOK)
@@ -128,12 +129,12 @@ func Test_Static_Options(t *testing.T) {
 		m.Use(Static(currentRoot, opt))
 
 		resp := httptest.NewRecorder()
-		req, err := http.NewRequest("GET", "http://localhost:4000/macaron.go", nil)
+		req, err := http.NewRequest("GET", "http://localhost:4000/emmanuel.go", nil)
 		So(err, ShouldBeNil)
 		m.ServeHTTP(resp, req)
 
 		So(resp.Code, ShouldEqual, http.StatusOK)
-		So(buf.String(), ShouldEqual, "[Macaron] [Static] Serving /macaron.go\n")
+		So(buf.String(), ShouldEqual, "[Emmanuel] [Static] Serving /emmanuel.go\n")
 
 		// Not disable logging.
 		m.Handlers()
@@ -149,7 +150,7 @@ func Test_Static_Options(t *testing.T) {
 	Convey("Serve static files with options serve index", t, func() {
 		var buf bytes.Buffer
 		m := NewWithLogger(&buf)
-		opt := StaticOptions{IndexFile: "macaron.go"}
+		opt := StaticOptions{IndexFile: "emmanuel.go"}
 		m.Use(Static(currentRoot, opt))
 
 		resp := httptest.NewRecorder()
@@ -158,7 +159,7 @@ func Test_Static_Options(t *testing.T) {
 		m.ServeHTTP(resp, req)
 
 		So(resp.Code, ShouldEqual, http.StatusOK)
-		So(buf.String(), ShouldEqual, "[Macaron] [Static] Serving /macaron.go\n")
+		So(buf.String(), ShouldEqual, "[Emmanuel] [Static] Serving /emmanuel.go\n")
 	})
 
 	Convey("Serve static files with options prefix", t, func() {
@@ -168,12 +169,12 @@ func Test_Static_Options(t *testing.T) {
 		m.Use(Static(currentRoot, opt))
 
 		resp := httptest.NewRecorder()
-		req, err := http.NewRequest("GET", "http://localhost:4000/public/macaron.go", nil)
+		req, err := http.NewRequest("GET", "http://localhost:4000/public/emmanuel.go", nil)
 		So(err, ShouldBeNil)
 		m.ServeHTTP(resp, req)
 
 		So(resp.Code, ShouldEqual, http.StatusOK)
-		So(buf.String(), ShouldEqual, "[Macaron] [Static] Serving /macaron.go\n")
+		So(buf.String(), ShouldEqual, "[Emmanuel] [Static] Serving /emmanuel.go\n")
 	})
 
 	Convey("Serve static files with options expires", t, func() {
@@ -182,7 +183,7 @@ func Test_Static_Options(t *testing.T) {
 		m.Use(Static(currentRoot, opt))
 
 		resp := httptest.NewRecorder()
-		req, err := http.NewRequest("GET", "http://localhost:4000/macaron.go", nil)
+		req, err := http.NewRequest("GET", "http://localhost:4000/emmanuel.go", nil)
 		So(err, ShouldBeNil)
 		m.ServeHTTP(resp, req)
 
@@ -195,10 +196,10 @@ func Test_Static_Options(t *testing.T) {
 		m.Use(Static(currentRoot, opt))
 
 		resp := httptest.NewRecorder()
-		req, err := http.NewRequest("GET", "http://localhost:4000/macaron.go", nil)
+		req, err := http.NewRequest("GET", "http://localhost:4000/emmanuel.go", nil)
 		So(err, ShouldBeNil)
 		m.ServeHTTP(resp, req)
-		tag := GenerateETag(fmt.Sprint(resp.Body.Len()), "macaron.go", resp.Header().Get("last-modified"))
+		tag := GenerateETag(fmt.Sprint(resp.Body.Len()), "emmanuel.go", resp.Header().Get("last-modified"))
 
 		So(resp.Header().Get("ETag"), ShouldEqual, `"`+tag+`"`)
 	})
@@ -209,10 +210,10 @@ func Test_Static_Options(t *testing.T) {
 		m.Use(Static(currentRoot, opt))
 
 		resp := httptest.NewRecorder()
-		req, err := http.NewRequest("GET", "http://localhost:4000/macaron.go", nil)
+		req, err := http.NewRequest("GET", "http://localhost:4000/emmanuel.go", nil)
 		So(err, ShouldBeNil)
 		m.ServeHTTP(resp, req)
-		tag := GenerateETag(fmt.Sprint(resp.Body.Len()), "macaron.go", resp.Header().Get("last-modified"))
+		tag := GenerateETag(fmt.Sprint(resp.Body.Len()), "emmanuel.go", resp.Header().Get("last-modified"))
 
 		// Second request with ETag in If-None-Match
 		resp = httptest.NewRecorder()
@@ -286,12 +287,12 @@ func Test_Statics(t *testing.T) {
 			m.Use(Statics(StaticOptions{}, currentRoot, currentRoot+"/fixtures/basic"))
 
 			resp := httptest.NewRecorder()
-			req, err := http.NewRequest("GET", "http://localhost:4000/macaron.go", nil)
+			req, err := http.NewRequest("GET", "http://localhost:4000/emmanuel.go", nil)
 			So(err, ShouldBeNil)
 			m.ServeHTTP(resp, req)
 
 			So(resp.Code, ShouldEqual, http.StatusOK)
-			So(buf.String(), ShouldEqual, "[Macaron] [Static] Serving /macaron.go\n")
+			So(buf.String(), ShouldEqual, "[Emmanuel] [Static] Serving /emmanuel.go\n")
 
 			resp = httptest.NewRecorder()
 			req, err = http.NewRequest("GET", "http://localhost:4000/admin/index.tmpl", nil)
@@ -299,7 +300,7 @@ func Test_Statics(t *testing.T) {
 			m.ServeHTTP(resp, req)
 
 			So(resp.Code, ShouldEqual, http.StatusOK)
-			So(buf.String(), ShouldEndWith, "[Macaron] [Static] Serving /admin/index.tmpl\n")
+			So(buf.String(), ShouldEndWith, "[Emmanuel] [Static] Serving /admin/index.tmpl\n")
 		})
 	})
 }

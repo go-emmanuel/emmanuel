@@ -1,5 +1,6 @@
 // Copyright 2013 Martini Authors
 // Copyright 2014 The Macaron Authors
+// Copyright 2020 the Emmanuel developers
 //
 // Licensed under the Apache License, Version 2.0 (the "License"): you may
 // not use this file except in compliance with the License. You may obtain
@@ -13,7 +14,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-package macaron
+package emmanuel
 
 import (
 	"bytes"
@@ -276,7 +277,7 @@ func compile(opt RenderOptions) *template.Template {
 	t := template.New(opt.Directory)
 	t.Delims(opt.Delims.Left, opt.Delims.Right)
 	// Parse an initial template in case we don't have any.
-	template.Must(t.Parse("Macaron"))
+	template.Must(t.Parse("Emmanuel"))
 
 	if opt.TemplateFileSystem == nil {
 		opt.TemplateFileSystem = NewTemplateFileSystem(opt, false)
@@ -410,13 +411,13 @@ func renderHandler(opt RenderOptions, tplSets []string) Handler {
 	}
 }
 
-// Renderer is a Middleware that maps a macaron.Render service into the Macaron handler chain.
-// An single variadic macaron.RenderOptions struct can be optionally provided to configure
+// Renderer is a Middleware that maps a emmanuel.Render service into the Emmanuel handler chain.
+// An single variadic emmanuel.RenderOptions struct can be optionally provided to configure
 // HTML rendering. The default directory for templates is "templates" and the default
 // file extension is ".tmpl" and ".html".
 //
-// If MACARON_ENV is set to "" or "development" then templates will be recompiled on every request. For more performance, set the
-// MACARON_ENV environment variable to "production".
+// If EMMANUEL_ENV is set to "" or "development" then templates will be recompiled on every request. For more performance, set the
+// EMMANUEL_ENV environment variable to "production".
 func Renderer(options ...RenderOptions) Handler {
 	return renderHandler(prepareRenderOptions(options), []string{})
 }

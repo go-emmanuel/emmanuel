@@ -1,5 +1,6 @@
 // Copyright 2013 Martini Authors
 // Copyright 2014 The Macaron Authors
+// Copyright 2020 the Emmanuel developers
 //
 // Licensed under the Apache License, Version 2.0 (the "License"): you may
 // not use this file except in compliance with the License. You may obtain
@@ -13,7 +14,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-package macaron
+package emmanuel
 
 import (
 	"net/http"
@@ -46,7 +47,7 @@ func Test_New(t *testing.T) {
 	})
 }
 
-func Test_Macaron_Before(t *testing.T) {
+func Test_Emmanuel_Before(t *testing.T) {
 	Convey("Register before handlers", t, func() {
 		m := New()
 		m.Before(func(rw http.ResponseWriter, req *http.Request) bool {
@@ -62,7 +63,7 @@ func Test_Macaron_Before(t *testing.T) {
 	})
 }
 
-func Test_Macaron_ServeHTTP(t *testing.T) {
+func Test_Emmanuel_ServeHTTP(t *testing.T) {
 	Convey("Serve HTTP requests", t, func() {
 		result := ""
 		m := New()
@@ -91,7 +92,7 @@ func Test_Macaron_ServeHTTP(t *testing.T) {
 	})
 }
 
-func Test_Macaron_Handlers(t *testing.T) {
+func Test_Emmanuel_Handlers(t *testing.T) {
 	Convey("Add custom handlers", t, func() {
 		result := ""
 		batman := func(c *Context) {
@@ -132,7 +133,7 @@ func Test_Macaron_Handlers(t *testing.T) {
 	})
 }
 
-func Test_Macaron_EarlyWrite(t *testing.T) {
+func Test_Emmanuel_EarlyWrite(t *testing.T) {
 	Convey("Write early content to response", t, func() {
 		result := ""
 		m := New()
@@ -158,7 +159,7 @@ func Test_Macaron_EarlyWrite(t *testing.T) {
 	})
 }
 
-func Test_Macaron_Written(t *testing.T) {
+func Test_Emmanuel_Written(t *testing.T) {
 	Convey("Written sign", t, func() {
 		resp := httptest.NewRecorder()
 		m := New()
@@ -175,7 +176,7 @@ func Test_Macaron_Written(t *testing.T) {
 	})
 }
 
-func Test_Macaron_Basic_NoRace(t *testing.T) {
+func Test_Emmanuel_Basic_NoRace(t *testing.T) {
 	Convey("Make sure no race between requests", t, func() {
 		m := New()
 		handlers := []Handler{func() {}, func() {}}

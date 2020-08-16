@@ -1,4 +1,5 @@
 // Copyright 2014 The Macaron Authors
+// Copyright 2020 the Emmanuel developers
 //
 // Licensed under the Apache License, Version 2.0 (the "License"): you may
 // not use this file except in compliance with the License. You may obtain
@@ -12,7 +13,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-package macaron
+package emmanuel
 
 import (
 	"crypto/sha256"
@@ -80,7 +81,7 @@ func (invoke ContextInvoker) Invoke(params []interface{}) ([]reflect.Value, erro
 	return nil, nil
 }
 
-// Context represents the runtime context of current request of Macaron instance.
+// Context represents the runtime context of current request of Emmanuel instance.
 // It is the integration of most frequently used middlewares and helper methods.
 type Context struct {
 	inject.Injector
@@ -413,7 +414,7 @@ func (ctx *Context) GetCookieFloat64(name string) float64 {
 var defaultCookieSecret string
 
 // SetDefaultCookieSecret sets global default secure cookie secret.
-func (m *Macaron) SetDefaultCookieSecret(secret string) {
+func (m *Emmanuel) SetDefaultCookieSecret(secret string) {
 	defaultCookieSecret = secret
 }
 
